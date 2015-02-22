@@ -19,8 +19,11 @@ namespace robot {
     std::string readline();
     void write(const std::string& data);
     void close();
+    void reset();
     
   private:
+    std::string device_;
+    unsigned int baud_;
     boost::asio::io_service& io_;
     boost::asio::serial_port serial_;
   };

@@ -42,6 +42,9 @@ int main(int argc, char* argv[])
       else if (req.body == "stop") {
         robot.stop();
       }
+      else if (req.body == "reset") {
+        robot.reset();
+      }
       return "";
     });
 

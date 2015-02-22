@@ -18,7 +18,17 @@
             overflow: hidden;
         }
 
-        .button {
+        .move-button {
+            border: 1px solid;
+            text-align: center;
+            background-color: #999;
+        }
+
+        #reset {
+            width: 300px;
+            height: 100px;
+            display: inline-block;
+            overflow: hidden;
             border: 1px solid;
             text-align: center;
             background-color: #999;
@@ -28,14 +38,15 @@
 <body>
     <div id="container">
         <span class="grid-entry"></span>
-        <span class="button grid-entry" id="forward">Forward</span>
+        <span class="move-button grid-entry" id="forward">Forward</span>
         <span class="grid-entry"></span>
-        <span class="button grid-entry" id="left">Left</span>
+        <span class="move-button grid-entry" id="left">Left</span>
         <span class="grid-entry"></span>
-        <span class="button grid-entry" id="right">Right</span>
+        <span class="move-button grid-entry" id="right">Right</span>
         <span class="grid-entry"></span>
-        <span class="button grid-entry" id="reverse">Reverse</span>
+        <span class="move-button grid-entry" id="reverse">Reverse</span>
         <span class="grid-entry"></span>
+        <span id="reset">Reset</span>
     </div>
 
     <script>
@@ -56,12 +67,17 @@
                 $.post("/command", "right");
                 $("#right").css("background-color", "#0f0");
             });
+            $("#reset").mousedown(function() {
+                $.post("/command", "reset");
+                $("#reset").css("background-color", "#0f0");
+            });
             $("*").mouseup(function() {
                 $.post("/command", "stop");
                 $("#forward").css("background-color", "#999");
                 $("#reverse").css("background-color", "#999");
                 $("#left").css("background-color", "#999");
                 $("#right").css("background-color", "#999");
+                $("#reset").css("background-color", "#999");
             });
             $(document).keydown(function(k) {
                 switch(k.which) {

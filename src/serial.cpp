@@ -3,7 +3,8 @@
 namespace robot {
 
   Serial::Serial(boost::asio::io_service& io, const unsigned int baud,
-                 const std::string& device) : io_(io), serial_(io, device)
+                 const std::string& device)
+    : device_(device), baud_(baud), io_(io), serial_(io, device)
   {
     if (not this->serial_.is_open()) {
       std::cerr << "Error opening serial port" << std::endl;
@@ -49,6 +50,19 @@ namespace robot {
   void Serial::close()
   {
     this->serial_.close();
+  }
+
+
+
+  void Serial::reset()
+  {
+    close();
+    serial_ = boost::asio::serial_port(io_, device_);
+    if (not serial_.is_open()) {
+      std::cerr << "Error opening serial port" << std::endl;
+      return;
+    }
+    serial_.set_option(boost::asio::serial_port_base::baud_rate(baud_));
   }
 
 }

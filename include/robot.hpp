@@ -26,6 +26,7 @@ namespace robot {
     void left(const int duration = -1);
     void right(const int duration = -1);
     void stop();
+    void reset() { serial_.reset(); };
     const Motor& left_motor() const { return left_motor_; }
     const Motor& right_motor() const { return right_motor_; }
   private:
