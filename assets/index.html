@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" src="/main.css">
+    <title>Robot Control</title>
+</head>
+<body>
+    <div id="forward">Forward</div>
+    <div id="reverse">Reverse</div>
+    <button id="left">Left</button>
+    <button id="right">Right</button>
+
+    <script>
+        $(document).ready(function(){
+            $("#forward").mousedown(function(){
+                $.post("/command", "forward");
+            });
+            $("#reverse").mousedown(function(){
+                $.post("/command", "reverse");
+            });
+            $("#left").mousedown(function(){
+                $.post("/command", "left");
+            });
+            $("#right").mousedown(function(){
+                $.post("/command", "right");
+            });
+            $("*").mouseup(function(){
+                $.post("/command", "stop")
+            });
+        });
+    </script>
+</body>
+</html>
