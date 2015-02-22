@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
   robot::Robot robot(io, 9600, argv[1]);
 
   crow::SimpleApp app;
-  crow::mustache::set_base("assets");
+  crow::mustache::set_base("assets/templates");
 
   CROW_ROUTE(app, "/")
     ([]{
