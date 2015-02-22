@@ -5,25 +5,25 @@ namespace robot {
   Motor::Motor(const char code, Serial& serial_port)
     : serial_(serial_port)
   {
-    this->state_ = 0;
+    state_ = 0;
     std::stringstream stream;
     stream << code << "f;";
-    this->forward_command_ = stream.str();
+    forward_command_ = stream.str();
     stream.str("");
     stream << code << "b;";
-    this->backward_command_ = stream.str();
+    backward_command_ = stream.str();
     stream.str("");
     stream << code << "s;";
-    this->stop_command_ = stream.str();
+    stop_command_ = stream.str();
   }
 
 
 
   void Motor::forward()
   {
-    if (this->state_ <= 0) {
-      this->serial_.write(this->forward_command_);
-      this->state_ = 1;
+    if (state_ <= 0) {
+      serial_.write(forward_command_);
+      state_ = 1;
     }    
   }
 
@@ -31,9 +31,9 @@ namespace robot {
 
   void Motor::reverse()
   {
-    if (this->state_ >= 0) {
-      this->serial_.write(this->backward_command_);
-      this->state_ = -1;
+    if (state_ >= 0) {
+      serial_.write(backward_command_);
+      state_ = -1;
     }    
   }
 
@@ -41,9 +41,9 @@ namespace robot {
 
   void Motor::stop()
   {
-    if (this->state_ != 0) {
-      this->serial_.write(this->stop_command_);
-      this->state_ = 0;
+    if (state_ != 0) {
+      serial_.write(stop_command_);
+      state_ = 0;
     }    
   }
   

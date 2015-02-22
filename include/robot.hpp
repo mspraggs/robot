@@ -17,8 +17,8 @@ namespace robot {
           const std::string& device);
     ~Robot()
     {
-      this->stop();
-      this->serial_.close();
+      stop();
+      serial_.close();
     }
     
     void forward(const int duration = -1);

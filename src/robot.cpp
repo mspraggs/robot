@@ -9,7 +9,7 @@ namespace robot {
   {
     std::string ready = "";
     while (ready.size() < 2) {
-      ready = this->serial_.readline();
+      ready = serial_.readline();
     }
   }
 
@@ -17,45 +17,45 @@ namespace robot {
 
   void Robot::forward(const int duration)
   {
-    this->run_motors(std::bind(&Motor::forward, &this->left_motor_),
-                     std::bind(&Motor::forward, &this->right_motor_),
-                     duration);
+    run_motors(std::bind(&Motor::forward, &left_motor_),
+               std::bind(&Motor::forward, &right_motor_),
+               duration);
   }
 
   
 
   void Robot::reverse(const int duration)
   {
-    this->run_motors(std::bind(&Motor::reverse, &this->left_motor_),
-                     std::bind(&Motor::reverse, &this->right_motor_),
-                     duration);
+    run_motors(std::bind(&Motor::reverse, &left_motor_),
+               std::bind(&Motor::reverse, &right_motor_),
+               duration);
   }
 
   
 
   void Robot::left(const int duration)
   {
-    this->run_motors(std::bind(&Motor::reverse, &this->left_motor_),
-                     std::bind(&Motor::forward, &this->right_motor_),
-                     duration);
+    run_motors(std::bind(&Motor::reverse, &left_motor_),
+               std::bind(&Motor::forward, &right_motor_),
+               duration);
   }
 
   
 
   void Robot::right(const int duration)
   {
-    this->run_motors(std::bind(&Motor::forward, &this->left_motor_),
-                     std::bind(&Motor::reverse, &this->right_motor_),
-                     duration);
+    run_motors(std::bind(&Motor::forward, &left_motor_),
+               std::bind(&Motor::reverse, &right_motor_),
+               duration);
   }
 
   
 
   void Robot::stop()
   {
-    this->run_motors(std::bind(&Motor::stop, &this->left_motor_),
-                     std::bind(&Motor::stop, &this->right_motor_),
-                     -1);
+    run_motors(std::bind(&Motor::stop, &left_motor_),
+               std::bind(&Motor::stop, &right_motor_),
+               -1);
   }
 
 
@@ -68,8 +68,8 @@ namespace robot {
     right_func();
     if (duration > -1) {
       std::this_thread::sleep_for(std::chrono::milliseconds(duration));
-      this->left_motor_.stop();
-      this->right_motor_.stop();
+      left_motor_.stop();
+      right_motor_.stop();
     }
   }
     

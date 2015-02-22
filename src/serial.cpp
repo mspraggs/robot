@@ -6,18 +6,18 @@ namespace robot {
                  const std::string& device)
     : device_(device), baud_(baud), io_(io), serial_(io, device)
   {
-    if (not this->serial_.is_open()) {
+    if (not serial_.is_open()) {
       std::cerr << "Error opening serial port" << std::endl;
       return;
     }
-    this->serial_.set_option(boost::asio::serial_port_base::baud_rate(baud));
+    serial_.set_option(boost::asio::serial_port_base::baud_rate(baud));
   }
 
 
   char Serial::read()
   {
     char ret = 0;
-    boost::asio::read(this->serial_, boost::asio::buffer(&ret, 1));
+    boost::asio::read(serial_, boost::asio::buffer(&ret, 1));
     return ret;
   }
 
@@ -28,7 +28,7 @@ namespace robot {
     std::string ret;
     char buff = 0;
     while (buff != '\n') {
-      buff = this->read();
+      buff = read();
       if (buff != '\r' and buff != '\n') {
         ret += buff;
       }
@@ -41,7 +41,7 @@ namespace robot {
 
   void Serial::write(const std::string& data)
   {
-    boost::asio::write(this->serial_, boost::asio::buffer(data.c_str(),
+    boost::asio::write(serial_, boost::asio::buffer(data.c_str(),
                                                           data.size()));
   }
 
@@ -49,7 +49,7 @@ namespace robot {
 
   void Serial::close()
   {
-    this->serial_.close();
+    serial_.close();
   }
 
 
