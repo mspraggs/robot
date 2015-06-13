@@ -7,9 +7,16 @@
     <title>Robot Control</title>
     <style>
         #container {
+	    float: left;
             width: 350px;
             height: 350px;
         }
+
+	#camera-iframe {
+	    width: 700px;
+	    height: 500px;
+	    border: none;
+	}
 
         .grid-entry {
             width: 100px;
@@ -47,6 +54,9 @@
         <span class="move-button grid-entry" id="reverse">Reverse</span>
         <span class="grid-entry"></span>
         <span id="reset">Reset</span>
+    </div>
+    <div>
+        <iframe id="camera-iframe" src="http://192.168.0.12:8081/"></iframe>
     </div>
 
     <script>
