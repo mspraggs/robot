@@ -1,11 +1,26 @@
 #include <cstdlib>
 #include <functional>
 #include <iostream>
+#include <thread>
+#include <utility>
 
 #include <boost/asio.hpp>
 #include <crow_all.h>
 
 #include <robot.hpp>
+
+
+void autonomous_robot(robot::Robot& robot)
+{
+  using namespace std::literals;
+  while (true) {
+    robot.forward();
+    std::this_thread::sleep_for(0.2s);
+    robot.reverse();
+    std::this_thread::sleep_for(0.2s);
+  }
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -18,6 +33,8 @@ int main(int argc, char* argv[])
 
   boost::asio::io_service io;
   robot::Robot robot(io, 9600, argv[1]);
+
+  std::thread auto_robot(autonomous_robot, std::ref(robot));
 
   crow::SimpleApp app;
   crow::mustache::set_base("assets/templates");
