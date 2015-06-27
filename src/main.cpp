@@ -4,6 +4,7 @@
 #include <iostream>
 #include <queue>
 #include <thread>
+#include <unordered_map>
 
 #include <boost/asio.hpp>
 #include <crow_all.h>
@@ -77,6 +78,12 @@ int main(int argc, char* argv[])
 
   crow::SimpleApp app;
   crow::mustache::set_base("assets/templates");
+  std::unordered_map<std::string, std::function<void()> > command_map;
+  command_map["forward"] = [&] () { robot.forward(); };
+  command_map["reverse"] = [&] () { robot.reverse(); };
+  command_map["left"] = [&] () { robot.left(); };
+  command_map["right"] = [&] () { robot.right(); };
+  command_map["reset"] = [&] () { robot.reset(); };
 
   CROW_ROUTE(app, "/")
     ([]{
@@ -86,30 +93,14 @@ int main(int argc, char* argv[])
 
   CROW_ROUTE(app, "/command").methods("GET"_method, "POST"_method)
     ([&](const crow::request& req){
-      if (req.body == "forward") {
-        robot.forward();
-      }
-      else if (req.body == "reverse") {
-        robot.reverse();
-      }
-      else if (req.body == "right") {
-        robot.right();
-      }
-      else if (req.body == "left") {
-        robot.left();
-      }
-      else if (req.body == "stop") {
-        robot.stop();
-      }
-      else if (req.body == "reset") {
-        robot.reset();
-      }
       autonomous_mutex.lock();
       message = Message::PAUSE;
       autonomous_mutex.unlock();
       robot.stop();
       timer.reset();
       timer.start();
+
+      command_map[req.body]();
       return "";
     });
 
