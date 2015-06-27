@@ -10,6 +10,7 @@ set(SOURCE_FILES
     include/motor.hpp
     include/robot.hpp
     include/serial.hpp
+    include/timer.hpp
     src/main.cpp
     src/motor.cpp
     src/robot.cpp

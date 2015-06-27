@@ -1,23 +1,54 @@
+#include <chrono>
 #include <cstdlib>
 #include <functional>
 #include <iostream>
+#include <queue>
 #include <thread>
-#include <utility>
 
 #include <boost/asio.hpp>
 #include <crow_all.h>
 
 #include <robot.hpp>
+#include <timer.hpp>
 
 
-void autonomous_robot(robot::Robot& robot)
+std::mutex autonomous_mutex;
+
+
+enum class Message {
+  GO,
+  PAUSE,
+  STOP
+};
+
+
+void autonomous_robot(robot::Robot& robot, Message& message)
 {
-  using namespace std::literals;
+  std::chrono::milliseconds delay(200);
+  autonomous_mutex.lock();
+  Message my_message = message;
+  autonomous_mutex.unlock();
   while (true) {
-    robot.forward();
-    std::this_thread::sleep_for(0.2s);
-    robot.reverse();
-    std::this_thread::sleep_for(0.2s);
+    switch (my_message) {
+      case Message::GO:
+        robot.forward();
+        std::this_thread::sleep_for(delay);
+        robot.stop();
+        std::this_thread::sleep_for(delay);
+        robot.reverse();
+        std::this_thread::sleep_for(delay);
+        robot.stop();
+        std::this_thread::sleep_for(delay);
+        break;
+      case Message::STOP:
+        return;
+      default:
+        break;
+    }
+
+    autonomous_mutex.lock();
+    my_message = message;
+    autonomous_mutex.unlock();
   }
 }
 
@@ -34,7 +65,15 @@ int main(int argc, char* argv[])
   boost::asio::io_service io;
   robot::Robot robot(io, 9600, argv[1]);
 
-  std::thread auto_robot(autonomous_robot, std::ref(robot));
+  Message message = Message::GO;
+  std::thread auto_robot(autonomous_robot, std::ref(robot), std::ref(message));
+  robot::Timer timer(2000,
+    [&] ()
+    {
+      autonomous_mutex.lock();
+      message = Message::GO;
+      autonomous_mutex.unlock();
+    }, 10);
 
   crow::SimpleApp app;
   crow::mustache::set_base("assets/templates");
@@ -65,6 +104,12 @@ int main(int argc, char* argv[])
       else if (req.body == "reset") {
         robot.reset();
       }
+      autonomous_mutex.lock();
+      message = Message::PAUSE;
+      autonomous_mutex.unlock();
+      robot.stop();
+      timer.reset();
+      timer.start();
       return "";
     });
 
